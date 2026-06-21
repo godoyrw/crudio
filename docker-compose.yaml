@@ -1,0 +1,126 @@
+services:
+
+  postgres:
+    image: postgres:18
+    container_name: crud.io_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - crud.io_postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - backend
+
+
+  mongodb:
+    image: mongo:8
+    container_name: crud.io_mongodb
+    restart: unless-stopped
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - crud.io_mongodb_data:/data/db
+
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - backend
+
+
+  redis:
+    image: redis:8-alpine
+    container_name: crud.io_redis
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD}
+
+    volumes:
+      - crud.io_redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - backend
+
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: crud.io_nginx
+    restart: unless-stopped
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - crud.io_nginx_conf:/etc/nginx/conf.d
+
+    networks:
+      - frontend
+      - backend
+
+
+  redisinsight:
+    image: redis/redisinsight
+    container_name: crud.io_redisinsight
+    restart: unless-stopped
+
+    ports:
+      - "5540:5540"
+
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    networks:
+      - backend
+
+networks:
+  frontend:
+    name: crud.io_frontend
+    driver: bridge
+
+  backend:
+    name: crud.io_backend
+    driver: bridge
+
+
+volumes:
+  crud.io_postgres_data:
+  crud.io_redis_data:
+  crud.io_mongodb_data:
+  crud.io_nginx_conf:

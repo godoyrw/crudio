@@ -1,0 +1,87 @@
+# Build artifacts
+bin/
+obj/
+*.nupkg
+*.snupkg
+
+# Visual Studio files
+*.sln.dotsettings.user
+*.user
+*.userosscache
+*.suo
+*.unsuccessfulload
+*.unsuccessfulload.user
+*.vspscc
+*.vssscc
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+*.x.proj.user
+*.vcxproj.user
+*.dbproj.user
+*.vcxproj.filters
+*.vcxproj.filters.user
+*.vcxproj.filters.user
+*.vcxproj.filters.user
+*.dbproj.filters
+*.dbproj.filters.user
+*.vcxproj.user
+*.vcxproj.user
+*.vcxproj.user
+*.vcxproj.user
+*.vcxproj.user
+*.vcxproj.user
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ReSharper
+_[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Node.js (if used)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+log/
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backups
+*.bak
+*.backup
+
+# Test coverage
+coverage/
+*.lcov
+
+# Dotnet
+dotCover*.xml
+testresults/

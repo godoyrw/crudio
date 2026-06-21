@@ -1,0 +1,30 @@
+@src_HostAddress = http://localhost:5051
+@token = paste-jwt-here
+
+POST {{src_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "secret123"
+}
+
+###
+
+POST {{src_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Another User",
+  "email": "another@example.com",
+  "password": "secret123"
+}
+
+###
+
+GET {{src_HostAddress}}/api/users
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###

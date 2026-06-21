@@ -1,0 +1,156 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: CrudIo.Api
+meta:
+  id: wrk_8123adbe95284a46839e613078b21ba3
+  created: 1781809063049
+  modified: 1781818800000
+  description: "CrudIo.API Test Collection - Updated with working JWT examples"
+collection:
+  - name: Autenticação
+    meta:
+      id: fld_auth_001
+      created: 1781818800000
+      modified: 1781818800000
+      description: "Endpoints para obtenção de tokens JWT"
+    children:
+      - name: Login do Usuário
+        meta:
+          id: req_auth_login_001
+          created: 1781818800000
+          modified: 1781818800000
+        method: POST
+        url: http://localhost:5051/api/auth/login
+        headers:
+          - name: Content-Type
+            value: application/json
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "godoyrw2@gmail.com",
+              "password": "secret123"
+            }
+      - name: Token do Cliente API
+        meta:
+          id: req_auth_client_001
+          created: 1781818800000
+          modified: 1781818800000
+        method: POST
+        url: http://localhost:5051/api/auth/client-token
+        headers:
+          - name: client-id
+            value: crudio-client
+          - name: client-api-key
+            value: ",&M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2"
+      - name: Refresh Token
+        meta:
+          id: req_auth_refresh_001
+          created: 1781818800000
+          modified: 1781818800000
+        method: POST
+        url: http://localhost:5051/api/auth/refresh-token
+        headers:
+          - name: Content-Type
+            value: application/json
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "refreshToken": "zOGphOwIQCWHYf28wrmSyzhlfqOGvdQ8i2kyu_3p20qJIRy8tstgwi0skMwSyL_tby1nz8BTNkW9pfPFWXe4AQ"
+            }
+  - name: Usuários
+    meta:
+      id: fld_users_001
+      created: 1781818800001
+      modified: 1781818800001
+      description: "Endpoints de gerenciamento de usuários (requerem autenticação)"
+    children:
+      - name: Criar Usuário
+        meta:
+          id: req_users_create_001
+          created: 1781818800001
+          modified: 1781818800001
+        method: POST
+        url: http://localhost:5051/api/users
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: Authorization
+            value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjYjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "name": "Maria Silva",
+              "email": "maria.silva@example.com",
+              "password": "senha456"
+            }
+      - name: Listar Usuários
+        meta:
+          id: req_users_list_001
+          created: 1781818800002
+          modified: 1781818800002
+        method: GET
+        url: http://localhost:5051/api/users
+        headers:
+          - name: Authorization
+            value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjYjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
+        queryParams:
+          - name: page
+            value: "1"
+          - name: pageSize
+            value: "10"
+      - name: Obter Usuário por ID
+        meta:
+          id: req_users_get_001
+          created: 1781818800003
+          modified: 1781818800003
+        method: GET
+        url: http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+        headers:
+          - name: Authorization
+            value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjYjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
+      - name: Atualizar Usuário
+        meta:
+          id: req_users_update_001
+          created: 1781818800004
+          modified: 1781818800004
+        method: PUT
+        url: http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: Authorization
+            value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjYjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": "29e8101f-14ba-4148-8ea8-121f6cc57824",
+              "name": "Roberto Godoy Atualizado",
+              "email": "godoyrw2_atualizado@gmail.com"
+            }
+      - name: Excluir Usuário
+        meta:
+          id: req_users_delete_001
+          created: 1781818800005
+          modified: 1781818800005
+        method: DELETE
+        url: http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+        headers:
+          - name: Authorization
+            value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjZjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_433befba6d65e5f145f587e2b09e904af4ed4c72
+    created: 1781809063051
+    modified: 1781809063051
+environments:
+  name: Base Environment
+  meta:
+    id: env_433befba6d65e5f145f587e2b09e904af4ed4c72
+    created: 1781809063050
+    modified: 1781809063050
+    isPrivate: false
