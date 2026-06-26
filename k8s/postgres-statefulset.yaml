@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: crudio-local
+  labels:
+    app: postgres
+spec:
+  serviceName: "postgres"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 999:999 /var/lib/postgresql && chmod 700 /var/lib/postgresql"]
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql
+        securityContext:
+          runAsUser: 0
+          privileged: true
+      containers:
+      - name: postgres
+        image: postgres:18
+        ports:
+        - containerPort: 5432
+          name: postgres
+        envFrom:
+        - secretRef:
+            name: crudio-secrets
+        - configMapRef:
+            name: crudio-config
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "appuser", "-d", "appdb"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+        livenessProbe:
+          exec:
+            command: ["pg_isready", "-U", "appuser", "-d", "appdb"]
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 6
+      volumes:
+      - name: postgres-storage
+        hostPath:
+          path: /tmp/crudio-local/postgres-data
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: crudio-local
+  labels:
+    app: postgres
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres
+  clusterIP: None

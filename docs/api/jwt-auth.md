@@ -7,9 +7,9 @@ Este documento explica detalhadamente como o JWT (JSON Web Token) é implementad
 ```mermaid
 graph TD
     A[Requisição HTTP] --> B{Endpoint de Autenticação?}
-    B -->|/api/auth/login| C[Fluxo de Usuário Final]
-    B -->|/api/auth/client-token| D[Fluxo de Cliente API]
-    B -->|/api/auth/refresh-token| E[Fluxo de Refresh Token]
+    B -->|/auth/login| C[Fluxo de Usuário Final]
+    B -->|/auth/client-token| D[Fluxo de Cliente API]
+    B -->|/auth/refresh-token| E[Fluxo de Refresh Token]
     C --> F[Validação Email/Senha]
     D --> G[Validação Client-ID/API-Key]
     E --> H[Validação Refresh Token]
@@ -82,7 +82,7 @@ public class JwtSettings
 
 ### 2. **Fluxo de Autenticação de Usuário Final (Email/Senha → JWT)**
 
-**Endpoint:** `POST /api/auth/login`  
+**Endpoint:** `POST /auth/login`  
 **Arquivo:** `src/CrudIo.Api/Features/Auth/AuthEndpoints.cs`
 ```csharp
 group.MapPost("/login", async (
@@ -203,7 +203,7 @@ public string GenerateUserToken(Guid userId, string email)
 
 ### 3. **Fluxo de Autenticação de Cliente API (Client-ID/API-Key → Access+Refresh Tokens)**
 
-**Endpoint:** `POST /api/auth/client-token`  
+**Endpoint:** `POST /auth/client-token`  
 **Arquivo:** `src/CrudIo.Api/Features/Auth/AuthEndpoints.cs`
 ```csharp
 group.MapPost("/client-token", async (
@@ -356,7 +356,7 @@ public string GenerateClientToken(Guid apiClientId, string clientId)
 
 ### 4. **Fluxo de Refresh Token de Cliente API (Refresh Token → Novos Access+Refresh Tokens)**
 
-**Endpoint:** `POST /api/auth/refresh-token`  
+**Endpoint:** `POST /auth/refresh-token`  
 **Arquivo:** `src/CrudIo.Api/Features/Auth/AuthEndpoints.cs`
 ```csharp
 group.MapPost("/refresh-token", async (
@@ -455,7 +455,7 @@ public async Task<ClientTokenResponse> Handle(
 
 ### 5. **Validação de JWT em Endpoints Protegidos (Middleware)**
 
-Todas as rotas em `/api/users/*` e outros endpoints protegidos usam o middleware de autenticação JWT configurado em `Program.cs`.
+Todas as rotas em `/users/*` e outros endpoints protegidos usam o middleware de autenticação JWT configurado em `Program.cs`.
 
 **Arquivo:** `src/Program.cs` (linhas 69-88)
 ```csharp
@@ -504,7 +504,7 @@ app.UseAuthorization();
 
 **Arquivo:** `src/CrudIo.Api/Features/Users/UsersEndpoints.cs` (exemplo de proteção)
 ```csharp
-var group = app.MapGroup("/api/users")
+var group = app.MapGroup("/users")
     .WithTags("Users")
     .RequireAuthorization(); // ← Isso ativa o middleware JWT
 ```
@@ -540,7 +540,7 @@ var group = app.MapGroup("/api/users")
 
 ## 📋 **Endpoints de Autenticação Especificados**
 
-### **1. POST /api/auth/login** (Usuário Final)
+### **1. POST /auth/login** (Usuário Final)
 **Autentica:** Email + Senha  
 **Retorna:** JWT de acesso para usuário final  
 **Duração:** 60 minutos (configurável via `JWT_EXPIRATION_MINUTES`)  
@@ -565,7 +565,7 @@ var group = app.MapGroup("/api/users")
 - `400`: Payload inválido ou malformado
 - `500`: Erro interno do servidor
 
-### **2. POST /api/auth/client-token** (Cliente API)
+### **2. POST /auth/client-token** (Cliente API)
 **Autentica:** Client-ID + Client-API-Key (headers)  
 **Retorna:** Par de tokens (Access Token JWT + Refresh Token aleatório)  
 **Duração Access Token:** 15 minutos (configurável via `CLIENT_ACCESS_TOKEN_EXPIRATION_MINUTES`)  
@@ -589,7 +589,7 @@ var group = app.MapGroup("/api/users")
 - `401`: `INVALID_CLIENT_CREDENTIALS` - Credenciais de cliente inválidas ou inativas
 - `500`: Erro interno do servidor
 
-### **3. POST /api/auth/refresh-token** (Cliente API)
+### **3. POST /auth/refresh-token** (Cliente API)
 **Autentica:** Refresh Token (body)  
 **Retorna:** Novos par de tokens (Access Token JWT + novo Refresh Token)  
 **Duração Access Token:** 15 minutos (mesmo que acima)  
@@ -651,13 +651,13 @@ Todos os endpoints de autenticação retornam erros no formato:
 ### **Testando Login de Usuário Final**
 ```bash
 # Primeiro, garantir que existe um usuário (pode ser criado via client token)
-curl -X POST http://localhost:5051/api/auth/client-token \
+curl -X POST http://localhost:5051/auth/client-token \
   -H "client-id: crudio-client" \
   -H "client-api-key: &,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2"
 
 # Usar o access token acima para criar um usuário (se nenhum existir)
 # Ou usar credenciais pré-existentes no banco
-curl -X POST http://localhost:5051/api/auth/login \
+curl -X POST http://localhost:5051/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "godoyrw2@gmail.com",
@@ -667,7 +667,7 @@ curl -X POST http://localhost:5051/api/auth/login \
 
 ### **Testando Autenticação de Cliente API**
 ```bash
-curl -X POST http://localhost:5051/api/auth/client-token \
+curl -X POST http://localhost:5051/auth/client-token \
   -H "client-id: crudio-client" \
   -H "client-api-key: &,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2"
 ```
@@ -675,19 +675,19 @@ curl -X POST http://localhost:5051/api/auth/client-token \
 ### **Testando Refresh Token**
 ```bash
 # 1. Obter par de tokens iniciais
-ACCESS_TOKEN=$(curl -s -X POST http://localhost:5051/api/auth/client-token \
+ACCESS_TOKEN=$(curl -s -X POST http://localhost:5051/auth/client-token \
   -H "client-id: crudio-client" \
   -H "client-api-key: &,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2" | jq -r '.accessToken')
 
-REFRESH_TOKEN=$(curl -s -X POST http://localhost:5051/api/auth/client-token \
+REFRESH_TOKEN=$(curl -s -X POST http://localhost:5051/auth/client-token \
   -H "client-id: crudio-client" \
   -H "client-api-key: &,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2" | jq -r '.refreshToken')
 
 # 2. Usar access token em endpoint protegido
-curl -H "Authorization: Bearer $ACCESS_TOKEN" http://localhost:5051/api/users
+curl -H "Authorization: Bearer $ACCESS_TOKEN" http://localhost:5051/users
 
 # 3. Após 15 minutos (quando access token expira), usar refresh token
-curl -X POST http://localhost:5051/api/auth/refresh-token \
+curl -X POST http://localhost:5051/auth/refresh-token \
   -H "Content-Type: application/json" \
   -d "{\"refreshToken\":\"$REFRESH_TOKEN\"}"
 ```
@@ -695,7 +695,7 @@ curl -X POST http://localhost:5051/api/auth/refresh-token \
 ### **Testando Endpoint Protegido com Token de Usuário**
 ```bash
 # Obtener token de usuario
-USER_TOKEN=$(curl -s -X POST http://localhost:5051/api/auth/login \
+USER_TOKEN=$(curl -s -X POST http://localhost:5051/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "godoyrw2@gmail.com",
@@ -703,13 +703,13 @@ USER_TOKEN=$(curl -s -X POST http://localhost:5051/api/auth/login \
   }' | jq -r '.token')
 
 # Usar em endpoint protegido
-curl -H "Authorization: Bearer $USER_TOKEN" http://localhost:5051/api/users
-curl -H "Authorization: Bearer $USER_TOKEN" http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+curl -H "Authorization: Bearer $USER_TOKEN" http://localhost:5051/users
+curl -H "Authorization: Bearer $USER_TOKEN" http://localhost:5051/users/29e8101f-14ba-4148-8ea8-121f6cc57824
 ```
 
 ## 🚨 **Solução de Problemas Comuns**
 
-### **Problema: `401 Unauthorized` em `/api/auth/login`**
+### **Problema: `401 Unauthorized` em `/auth/login`**
 **Causas possíveis:**
 1. **Credenciais incorretas**  
    → Verifique email e senha exatamente como cadastrados
@@ -720,7 +720,7 @@ curl -H "Authorization: Bearer $USER_TOKEN" http://localhost:5051/api/users/29e8
 3. **Senha não está hasheada corretamente**  
    → Verifique se o `PasswordService` está funcionando (usa BCrypt)
 
-### **Problema: `401 Unauthorized` em `/api/auth/client-token`**
+### **Problema: `401 Unauthorized` em `/auth/client-token`**
 **Causas possíveis:**
 1. **Headers ausentes ou incorretos**  
    → Verifique se está enviando exatamente:

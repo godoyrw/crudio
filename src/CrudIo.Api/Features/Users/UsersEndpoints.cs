@@ -14,9 +14,9 @@ namespace CrudIo.Api.Features.Users;
 
 public static class UsersEndpoints
 {
-    public static void MapUsersEndpoints(this WebApplication app)
+    public static void MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/users")
+        var group = app.MapGroup("/users")
             .WithTags("Users")
             .RequireAuthorization();
 
@@ -31,7 +31,7 @@ public static class UsersEndpoints
                 var result = await sender.Send(command);
 
                 return Results.Created(
-                    $"/api/users/{result.Id}",
+                    $"/users/{result.Id}",
                     result);
             }
             catch (ValidationException ex)

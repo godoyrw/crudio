@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redisinsight
+  namespace: crudio-local
+  labels:
+    app: redisinsight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redisinsight
+  template:
+    metadata:
+      labels:
+        app: redisinsight
+    spec:
+      containers:
+      - name: redisinsight
+        image: redis/redisinsight:latest
+        ports:
+        - containerPort: 5540
+          name: http
+        env:
+        - name: REDIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: crudio-secrets
+              key: REDIS_PASSWORD
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: crudio-secrets
+              key: REDIS_PASSWORD
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5540
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5540
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redisinsight
+  namespace: crudio-local
+  labels:
+    app: redisinsight
+spec:
+  type: NodePort
+  ports:
+  - port: 5540
+    targetPort: 5540
+    nodePort: 30002
+  selector:
+    app: redisinsight

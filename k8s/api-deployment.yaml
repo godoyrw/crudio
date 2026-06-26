@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crudio-api
+  namespace: crudio-local
+  labels:
+    app: crudio-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crudio-api
+  template:
+    metadata:
+      labels:
+        app: crudio-api
+    spec:
+      containers:
+      - name: crudio-api
+        image: crudio-api:local
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5051
+          name: http
+        envFrom:
+        - secretRef:
+            name: crudio-secrets
+        - configMapRef:
+            name: crudio-config
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5051
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5051
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crudio-api
+  namespace: crudio-local
+  labels:
+    app: crudio-api
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 5051
+    nodePort: 30001
+  selector:
+    app: crudio-api

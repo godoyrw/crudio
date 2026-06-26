@@ -154,7 +154,7 @@ public static async Task SeedFromEnvironmentAsync(IServiceProvider serviceProvid
 
 Quando uma requisição chega ao endpoint de autenticação de cliente, as variáveis de ambiente **não são lidas diretamente**. Em vez disso, ocorre uma validação contra o banco de dados populado durante o seeding.
 
-**Endpoint:** `POST /api/auth/client-token`  
+**Endpoint:** `POST /auth/client-token`  
 **Arquivo:** `src/CrudIo.Api/Features/Auth/AuthEndpoints.cs`
 ```csharp
 group.MapPost("/client-token", async (
@@ -266,7 +266,7 @@ export CLIENT_ID="crudio-client"
 export CLIENT_API_KEY='",&M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2'
 
 # Teste o endpoint de client token
-curl -v -X POST http://localhost:5051/api/auth/client-token \
+curl -v -X POST http://localhost:5051/auth/client-token \
   -H "client-id: $CLIENT_ID" \
   -H "client-api-key: $CLIENT_API_KEY"
 ```
@@ -285,7 +285,7 @@ curl -v -X POST http://localhost:5051/api/auth/client-token \
 
 ## 🚨 **Solução de Problemas Comuns**
 
-### Problema: `401 Unauthorized` no endpoint `/api/auth/client-token`
+### Problema: `401 Unauthorized` no endpoint `/auth/client-token`
 **Causas possíveis:**
 1. **Credenciais incorretas nos headers**  
    → Verifique se está usando exatamente os valores do `.env`
@@ -350,4 +350,4 @@ Este padrão proporciona:
 ---
 *Documento gerado em: 20 de junho de 2026*  
 *Baseado na análise funcional do CrudIo.Api versão .NET 10*  
-*Local: `/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - CRUD.io/01 DOTnet8/docs/api/environments.md`*
+*Local: `/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - CRUD.io/01 DOTnet8/docs/environments.md`*

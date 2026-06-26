@@ -3,6 +3,16 @@
 ## 🎯 **O que é?**
 Uma **API RESTful em .NET 10** para gerenciar usuários, seguindo **Vertical Slice Architecture**. Projeto cliente para a plataforma Crud.io com integração completa a infraestrutura em containers (PostgreSQL, MongoDB, Redis).
 
+### Resumo da Análise do Projeto
+O CrudIo.Api é uma API RESTful em .NET 10 com:
+
+Arquitetura: Vertical Slice + CQRS + Minimal APIs
+Banco de Dados: PostgreSQL 18 (dados principais), MongoDB 8 (logs)
+Cache: Redis 8
+Proxy: Nginx (ports 80/443)
+Autenticação: JWT com dois fluxos (usuário e cliente API)
+Orquestração Atual: Docker Compose
+
 ---
 
 ## 🏗️ **Arquitetura & Stack**
@@ -27,15 +37,15 @@ src/
 ├── CrudIo.Api/
 │   ├── Features/
 │   │   ├── Auth/
-│   │   │   ├── Login/                 (POST /api/auth/login)
-│   │   │   ├── RefreshToken/          (POST /api/auth/refresh-token)
-│   │   │   └── ClientToken/           (POST /api/auth/client-token)
+│   │   │   ├── Login/                 (POST /auth/login)
+│   │   │   ├── RefreshToken/          (POST /auth/refresh-token)
+│   │   │   └── ClientToken/           (POST /auth/client-token)
 │   │   └── Users/
-│   │       ├── CreateUser/            (POST /api/users)
-│   │       ├── GetUser/               (GET /api/users/{id})
-│   │       ├── UpdateUser/            (PUT /api/users/{id})
-│   │       ├── DeleteUser/            (DELETE /api/users/{id})
-│   │       ├── ListUsers/             (GET /api/users?page=1&pageSize=10)
+│   │       ├── CreateUser/            (POST /users)
+│   │       ├── GetUser/               (GET /users/{id})
+│   │       ├── UpdateUser/            (PUT /users/{id})
+│   │       ├── DeleteUser/            (DELETE /users/{id})
+│   │       ├── ListUsers/             (GET /users?page=1&pageSize=10)
 │   │       └── UsersEndpoints.cs      (Mapper de rotas)
 │   │
 │   ├── Data/
@@ -129,7 +139,7 @@ group.MapGet("/{id:guid}", async (ISender sender, Guid id) => ...)
 A API usa autenticação por **JWT Bearer Token** com dois fluxos distintos:
 
 ### **Fluxo de Usuário Final**
-1. Autentique em `POST /api/auth/login` usando `email` e `password`.
+1. Autentique em `POST /auth/login` usando `email` e `password`.
 2. Guarde o campo `token` retornado.
 3. Envie o token nas rotas protegidas usando o header:
    ```http
@@ -137,14 +147,14 @@ A API usa autenticação por **JWT Bearer Token** com dois fluxos distintos:
    ```
 
 ### **Fluxo de Cliente API (Service-to-Service)**
-1. Autentique em `POST /api/auth/client-token` usando os headers:
+1. Autentique em `POST /auth/client-token` usando os headers:
    - `client-id`: Seu ID de cliente
    - `client-api-key`: Sua chave de API
 2. Guarde os campos `accessToken` e `refreshToken` retornados.
 3. Use o `accessToken` nas rotas protegidas da mesma forma que o token de usuário.
-4. Quando o accessToken expirar, use o `refreshToken` em `POST /api/auth/refresh-token` para obter um novo par de tokens.
+4. Quando o accessToken expirar, use o `refreshToken` em `POST /auth/refresh-token` para obter um novo par de tokens.
 
-> **Observação:** Como não existe cadastro público de usuários, o primeiro usuário deve ser provisionado de forma administrativa (seed, migration/manual no banco ou outro processo interno). Depois disso, usuários autenticados podem criar novos usuários por `POST /api/users`.
+> **Observação:** Como não existe cadastro público de usuários, o primeiro usuário deve ser provisionado de forma administrativa (seed, migration/manual no banco ou outro processo interno). Depois disso, usuários autenticados podem criar novos usuários por `POST /users`.
 
 ### Configuração JWT
 
@@ -165,7 +175,7 @@ Em produção, configure obrigatoriamente um `JWT_SECRET` forte e privado.
 
 **Login de Usuário:**
 ```bash
-curl -X POST http://localhost:5051/api/auth/login \
+curl -X POST http://localhost:5051/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -175,14 +185,14 @@ curl -X POST http://localhost:5051/api/auth/login \
 
 **Autenticação de Cliente API:**
 ```bash
-curl -X POST http://localhost:5051/api/auth/client-token \
+curl -X POST http://localhost:5051/auth/client-token \
   -H "client-id: crudio-client" \
   -H "client-api-key: &,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2"
 ```
 
 **Refresh de Token de Cliente:**
 ```bash
-curl -X POST http://localhost:5051/api/auth/refresh-token \
+curl -X POST http://localhost:5051/auth/refresh-token \
   -H "Content-Type: application/json" \
   -d '{
     "refreshToken": "seu-refresh-token-aqui"
@@ -191,13 +201,13 @@ curl -X POST http://localhost:5051/api/auth/refresh-token \
 
 **Chamar endpoint protegido (usando qualquer tipo de token):**
 ```bash
-curl http://localhost:5051/api/users \
+curl http://localhost:5051/users \
   -H "Authorization: Bearer <token>"
 ```
 
 **Criar usuário autenticado:**
 ```bash
-curl -X POST http://localhost:5051/api/users \
+curl -X POST http://localhost:5051/users \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -307,25 +317,25 @@ http://localhost:5051
 
 | Método | Rota | Proteção | Descrição |
 |--------|------|----------|-----------|
-| `POST` | `/api/auth/login` | Pública | Autentica credenciais de usuário e retorna JWT |
-| `POST` | `/api/auth/client-token` | Pública | Autentica credenciais de cliente API e retorna par de tokens (access + refresh) |
-| `POST` | `/api/auth/refresh-token` | Pública | Renova o access token usando um refresh token válido (apenas para clientes API) |
+| `POST` | `/auth/login` | Pública | Autentica credenciais de usuário e retorna JWT |
+| `POST` | `/auth/client-token` | Pública | Autentica credenciais de cliente API e retorna par de tokens (access + refresh) |
+| `POST` | `/auth/refresh-token` | Pública | Renova o access token usando um refresh token válido (apenas para clientes API) |
 
 ### Users (Exigem autenticação JWT)
 
 | Método | Rota | Proteção | Descrição |
 |--------|------|----------|-----------|
-| `POST` | `/api/users` | JWT | Cria usuário |
-| `GET` | `/api/users/{id}` | JWT | Busca usuário por ID |
-| `GET` | `/api/users?page=1&pageSize=10` | JWT | Lista usuários com paginação |
-| `PUT` | `/api/users/{id}` | JWT | Atualiza usuário |
-| `DELETE` | `/api/users/{id}` | JWT | Exclui usuário |
+| `POST` | `/users` | JWT | Cria usuário |
+| `GET` | `/users/{id}` | JWT | Busca usuário por ID |
+| `GET` | `/users?page=1&pageSize=10` | JWT | Lista usuários com paginação |
+| `PUT` | `/users/{id}` | JWT | Atualiza usuário |
+| `DELETE` | `/users/{id}` | JWT | Exclui usuário |
 
 ---
 
 ## 📖 **Documentação dos Endpoints**
 
-### `POST /api/auth/login`
+### `POST /auth/login`
 Autentica um usuário existente e retorna um JWT de acesso.
 
 **Request:**
@@ -354,7 +364,7 @@ Autentica um usuário existente e retorna um JWT de acesso.
 
 ---
 
-### `POST /api/auth/client-token`
+### `POST /auth/client-token`
 Autentica um cliente API usando credenciais de serviço e retorna um par de tokens (access token e refresh token).
 
 **Request Headers:**
@@ -383,7 +393,7 @@ client-api-key: &,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2
 
 ---
 
-### `POST /api/auth/refresh-token`
+### `POST /auth/refresh-token`
 Renova o access token de um cliente API usando um refresh token válido.
 
 **Request:**
@@ -414,7 +424,7 @@ Renova o access token de um cliente API usando um refresh token válido.
 
 ---
 
-### `POST /api/users`
+### `POST /users`
 Cria um novo usuário. Exige autenticação JWT (qualquer token válido: de usuário ou de cliente API).
 
 **Headers:**
@@ -451,7 +461,7 @@ Content-Type: application/json
 
 ---
 
-### `GET /api/users`
+### `GET /users`
 Lista usuários com paginação. Exige autenticação JWT.
 
 **Headers:**
@@ -467,7 +477,7 @@ Authorization: Bearer <token>
 
 **Exemplo:**
 ```http
-GET /api/users?page=1&pageSize=10
+GET /users?page=1&pageSize=10
 Authorization: Bearer <token>
 ```
 
@@ -497,7 +507,7 @@ Authorization: Bearer <token>
 
 ---
 
-### `GET /api/users/{id}`
+### `GET /users/{id}`
 Busca um usuário específico por ID. Exige autenticação JWT.
 
 **Headers:**
@@ -525,7 +535,7 @@ Authorization: Bearer <token>
 
 ---
 
-### `PUT /api/users/{id}`
+### `PUT /users/{id}`
 Atualiza o nome e/ou e-mail de um usuário existente. Exige autenticação JWT.
 
 **Headers:**
@@ -565,7 +575,7 @@ Content-Type: application/json
 
 ---
 
-### `DELETE /api/users/{id}`
+### `DELETE /users/{id}`
 Exclui um usuário existente. Exige autenticação JWT.
 
 **Headers:**

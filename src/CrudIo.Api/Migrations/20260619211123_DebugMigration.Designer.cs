@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace src.Migrations
+namespace CrudIo.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260619211123_DebugMigration")]

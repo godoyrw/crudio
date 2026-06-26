@@ -1,0 +1,19 @@
+**/bin
+**/obj
+**/.vs
+**/.vscode
+
+# caches de build local
+*.user
+*.suo
+
+# logs e dumps
+*.log
+*.tmp
+
+# git
+.git
+.gitignore
+
+# IDEs
+.idea

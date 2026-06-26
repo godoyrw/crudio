@@ -1,7 +1,30 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pkill -f dotnet)"
+      "Bash(pkill -f dotnet)",
+      "Bash(kubectl get *)",
+      "Bash(kubectl version *)",
+      "Bash(/snap/bin/kubectl get *)",
+      "Bash(kind get *)",
+      "Bash(KUBECONFIG=$\\(kind get kubeconfig --name crudio-local\\) kubectl get nodes)",
+      "Bash(/snap/bin/kubectl version *)",
+      "Bash(ls -la /snap/bin/kubectl)",
+      "Read(//usr/bin/**)",
+      "Bash(snap list *)",
+      "Read(//tmp/**)",
+      "Bash(kubectl --kubeconfig /tmp/kubeconfig.yaml get pods -n crudio-local)",
+      "Bash(kubectl --kubeconfig /tmp/kubeconfig.yaml version --client)",
+      "Bash(/usr/bin/snap kubectl *)",
+      "Bash(find /snap -name \"kubectl\" -type f 2>/dev/null)",
+      "Read(//snap/**)",
+      "Bash(/snap/kubectl/3804/kubectl --kubeconfig /tmp/kubeconfig.yaml version --client)",
+      "Bash(/snap/kubectl/3804/kubectl --kubeconfig /tmp/kubeconfig.yaml get pods -n crudio-local)",
+      "Bash(/snap/kubectl/3804/kubectl --kubeconfig /tmp/kubeconfig.yaml describe pod crudio-api-66d66cdf67-mb6jb -n crudio-local)",
+      "Bash(/snap/kubectl/3804/kubectl --kubeconfig /tmp/kubeconfig.yaml describe pod redis-69d4c45ccb-z5nn6 -n crudio-local)",
+      "Bash(cat -n /mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml)",
+      "Read(//mnt/**)",
+      "Bash(sed -i 's/\\\\\\\\j/\\\\\\\\\\\\\\\\j/g' \"/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml\")",
+      "Bash(sed -i 's/\\\\\\\\&/\\\\\\\\\\\\\\\\&/g' \"/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml\")"
     ]
   }
 }

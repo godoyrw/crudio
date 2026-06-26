@@ -20,7 +20,7 @@ collection:
           created: 1781818800000
           modified: 1781818800000
         method: POST
-        url: http://localhost:5051/api/auth/login
+        url: http://localhost:5051/auth/login
         headers:
           - name: Content-Type
             value: application/json
@@ -37,7 +37,7 @@ collection:
           created: 1781818800000
           modified: 1781818800000
         method: POST
-        url: http://localhost:5051/api/auth/client-token
+        url: http://localhost:5051/auth/client-token
         headers:
           - name: client-id
             value: crudio-client
@@ -49,7 +49,7 @@ collection:
           created: 1781818800000
           modified: 1781818800000
         method: POST
-        url: http://localhost:5051/api/auth/refresh-token
+        url: http://localhost:5051/auth/refresh-token
         headers:
           - name: Content-Type
             value: application/json
@@ -72,7 +72,7 @@ collection:
           created: 1781818800001
           modified: 1781818800001
         method: POST
-        url: http://localhost:5051/api/users
+        url: http://localhost:5051/users
         headers:
           - name: Content-Type
             value: application/json
@@ -92,7 +92,7 @@ collection:
           created: 1781818800002
           modified: 1781818800002
         method: GET
-        url: http://localhost:5051/api/users
+        url: http://localhost:5051/users
         headers:
           - name: Authorization
             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjYjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
@@ -107,7 +107,7 @@ collection:
           created: 1781818800003
           modified: 1781818800003
         method: GET
-        url: http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+        url: http://localhost:5051/users/29e8101f-14ba-4148-8ea8-121f6cc57824
         headers:
           - name: Authorization
             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjYjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA
@@ -117,7 +117,7 @@ collection:
           created: 1781818800004
           modified: 1781818800004
         method: PUT
-        url: http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+        url: http://localhost:5051/users/29e8101f-14ba-4148-8ea8-121f6cc57824
         headers:
           - name: Content-Type
             value: application/json
@@ -137,7 +137,7 @@ collection:
           created: 1781818800005
           modified: 1781818800005
         method: DELETE
-        url: http://localhost:5051/api/users/29e8101f-14ba-4148-8ea8-121f6cc57824
+        url: http://localhost:5051/users/29e8101f-14ba-4148-8ea8-121f6cc57824
         headers:
           - name: Authorization
             value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjI1ZGE2MTg1LTNiZjMtNDIxZi05MWRjLTNjZjMyZDNkZTEwMCIsImNsaWVudF9pZCI6Im5mZWlvLWNsaWVudCIsInRva2VuX3R5cGUiOiJjbGllbnQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDbGllbnQiLCJleHAiOjE3ODE5MDUyNTcsImlzcyI6Ik5mZUlvLkFwaSIsImF1ZCI6Ik5mZUlvLkNsaWVudCJ9.-__aB1hEJ06P4isD5HKtck8NgQ_hysqm5fOE7LI4CGA

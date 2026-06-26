@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace src.Migrations
+namespace CrudIo.Api.Migrations
 {
     /// <inheritdoc />
     public partial class AddUserAuthFields : Migration
