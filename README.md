@@ -37,16 +37,6 @@ Orquestração Atual: Kubernetes (Kind local)
 ## 📁 **Estrutura do Projeto**
 
 ```
-k8s/
-├── api-deployment.yaml                               (Deployment da API + Service NodePort :30001)
-├── configmaps.yaml                                   (Variáveis não-sensíveis — hosts, portas, nomes de banco)
-├── mongodb-statefulset.yaml                          (StatefulSet MongoDB 8 + Service ClusterIP :27017)
-├── namespace.yaml                                    (Namespace crudio-local)
-├── postgres-statefulset.yaml                         (StatefulSet PostgreSQL 18 + Service ClusterIP :5432)
-├── redis-deployment.yaml                             (Deployment Redis 8 + Service ClusterIP :6379)
-├── redisinsight-deployment.yaml                      (Deployment RedisInsight + Service NodePort :30002)
-└── secrets.yaml                                      (Dados sensíveis — senhas, JWT secret, API key)
-
 src/                
 ├── CrudIo.Api/               
 │   ├── Features/                                     (Funcionalidades organizadas por domínio - Vertical Slice)
@@ -109,15 +99,14 @@ O projeto está configurado para deploy em um cluster Kubernetes local usando Ki
 
 ```
 k8s/
-├── namespace.yaml                 # Namespace crudio-local
-├── secrets.yaml                   # Dados sensíveis (senhas, chaves)
-├── configmaps.yaml                # Configurações não-sensíveis
-├── postgres-statefulset.yaml      # PostgreSQL 18 com storage persistente
-├─ mongodb-statefulset.yaml        # MongoDB 8 com storage persistente
-├── redis-deployment.yaml          # Redis 8 cache
-├── api-deployment.yaml            # CrudIo.Api ASP.NET Core
-├── redisinsight-deployment.yaml   # Interface gráfica para Redis (opcional)
-└── kustomization.yaml             # (opcional) para gestão de ambiente
+├── api-deployment.yaml                               (Deployment da API + Service NodePort :30001)
+├── configmaps.yaml                                   (Variáveis não-sensíveis — hosts, portas, nomes de banco)
+├── mongodb-statefulset.yaml                          (StatefulSet MongoDB 8 + Service ClusterIP :27017)
+├── namespace.yaml                                    (Namespace crudio-local)
+├── postgres-statefulset.yaml                         (StatefulSet PostgreSQL 18 + Service ClusterIP :5432)
+├── redis-deployment.yaml                             (Deployment Redis 8 + Service ClusterIP :6379)
+├── redisinsight-deployment.yaml                      (Deployment RedisInsight + Service NodePort :30002)
+└── secrets.yaml                                      (Dados sensíveis — senhas, JWT secret, API key)
 ```
 
 ### Características do Deploy Kubernetes:
