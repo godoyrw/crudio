@@ -99,14 +99,14 @@ O projeto está configurado para deploy em um cluster Kubernetes local usando Ki
 
 ```
 k8s/
-├── api-deployment.yaml                               (Deployment da API + Service NodePort :30001)
-├── configmaps.yaml                                   (Variáveis não-sensíveis — hosts, portas, nomes de banco)
-├── mongodb-statefulset.yaml                          (StatefulSet MongoDB 8 + Service ClusterIP :27017)
-├── namespace.yaml                                    (Namespace crudio-local)
-├── postgres-statefulset.yaml                         (StatefulSet PostgreSQL 18 + Service ClusterIP :5432)
-├── redis-deployment.yaml                             (Deployment Redis 8 + Service ClusterIP :6379)
-├── redisinsight-deployment.yaml                      (Deployment RedisInsight + Service NodePort :30002)
-└── secrets.yaml                                      (Dados sensíveis — senhas, JWT secret, API key)
+├── api-deployment.yaml             (Deployment da API + Service NodePort :30001)
+├── configmaps.yaml                 (Variáveis não-sensíveis — hosts, portas, nomes de banco)
+├── mongodb-statefulset.yaml        (StatefulSet MongoDB 8 + Service ClusterIP :27017)
+├── namespace.yaml                  (Namespace crudio-local)
+├── postgres-statefulset.yaml       (StatefulSet PostgreSQL 18 + Service ClusterIP :5432)
+├── redis-deployment.yaml           (Deployment Redis 8 + Service ClusterIP :6379)
+├── redisinsight-deployment.yaml    (Deployment RedisInsight + Service NodePort :30002)
+└── secrets.yaml                    (Dados sensíveis — senhas, JWT secret, API key)
 ```
 
 ### Características do Deploy Kubernetes:
