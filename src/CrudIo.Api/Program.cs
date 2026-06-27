@@ -54,6 +54,7 @@ try
 catch (Exception ex)
 {
     Console.WriteLine($"🟡 Redis unavailable, continuing without cache: {ex.Message}");
+    builder.Services.AddScoped<IRedisCacheService, NullCacheService>(); 
 }
 
 // ----------------------------
