@@ -5,13 +5,12 @@ metadata:
   namespace: crudio-local
 data:
   # Postgres
+  POSTGRES_DB: "appdb"
   POSTGRES_HOST: "postgres"
   POSTGRES_PORT: "5432"
-  POSTGRES_DB: "appdb"
-  POSTGRES_USER: "appuser"
 
   # MongoDB
-  MONGO_ROOT_USERNAME: "appuser"
+  MONGO_DB: "appdb_logs"
   MONGO_HOST: "mongodb"
   MONGO_PORT: "27017"
 
@@ -22,6 +21,6 @@ data:
   # JWT
   JWT_ISSUER: "CrudIo.Api"
   JWT_AUDIENCE: "CrudIo.Client"
-  JWT_EXPIRATION_MINUTES: "3600"
+  JWT_EXPIRATION_MINUTES: "60"
   CLIENT_ACCESS_TOKEN_EXPIRATION_MINUTES: "15"
   CLIENT_REFRESH_TOKEN_EXPIRATION_DAYS: "30"

@@ -1,0 +1,253 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: CrudIo.Api
+meta:
+  id: wrk_8123adbe95284a46839e613078b21ba3
+  created: 1781809063049
+  modified: 1782504994073
+  description: ""
+collection:
+  - name: Autenticação
+    meta:
+      id: fld_175ff9299dc3493dab60816756b89a85
+      created: 1781818800000
+      modified: 1781818800000
+      sortKey: 0
+      description: Endpoints para obtenção de tokens JWT
+    children:
+      - url: "{{ _.base_url }}/auth/client-token"
+        name: Token do Cliente API
+        meta:
+          id: req_deaf34fac629417fb8d79bad3cb7b0b3
+          created: 1781818800000
+          modified: 1782488454491
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: POST
+        headers:
+          - name: client-id
+            value: crudio-client
+          - name: client-api-key
+            value: "&,M:8<bi|5=NmnG&P?dJ=ibriyx|6bG|V/r+p-D&#c:p84N)=2"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/login"
+        name: Login do Usuário
+        meta:
+          id: req_e32c17cf9d314cc98520d08d5ee1e7ee
+          created: 1781818800000
+          modified: 1782488457979
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "maria.silva@example.com",
+            	"password": "senha456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: Authorization
+            value: Bearer {% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3',
+              'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'never', 60 %}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/refresh-token"
+        name: Refresh Token
+        meta:
+          id: req_f5a2dbdf91f24b4d9d74968664662615
+          created: 1781818800000
+          modified: 1782431671193
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+              "refreshToken": "{% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3', 'b64::JC5yZWZyZXNoVG9rZW4=::46b', 'never', 60 %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Usuários
+    meta:
+      id: fld_a3aadee9f4b24683bb35e16ced63773f
+      created: 1781818800001
+      modified: 1781818800001
+      sortKey: 0
+      description: Endpoints de gerenciamento de usuários (requerem autenticação)
+    children:
+      - url: "{{ _.base_url }}/users"
+        name: Criar Usuário
+        meta:
+          id: req_4f7afdd3992040879fe40b35979c427e
+          created: 1781818800001
+          modified: 1782504911422
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "name": "Roberto Godoy",
+              "email": "godoyrw@gmail.com",
+              "password": "godah123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: Authorization
+            value: Bearer {% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3',
+              'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'never', 60 %}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users"
+        name: Listar Usuários
+        meta:
+          id: req_d1170d995ec249faab9c31f1ce2d1a66
+          created: 1781818800002
+          modified: 1782431692077
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: GET
+        headers:
+          - name: Authorization
+            value: Bearer {% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3',
+              'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'never', 60 %}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users/29e8101f-14ba-4148-8ea8-121f6cc57824"
+        name: Obter Usuário por ID
+        meta:
+          id: req_3e5d2680583e46d2a6cbf06982678c08
+          created: 1781818800003
+          modified: 1782431681214
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: GET
+        headers:
+          - name: Authorization
+            value: Bearer {% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3',
+              'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'never', 60 %}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users/29e8101f-14ba-4148-8ea8-121f6cc57824"
+        name: Atualizar Usuário
+        meta:
+          id: req_fd30223db40c4477bd49bd4d9b0c0d0e
+          created: 1781818800004
+          modified: 1782431698527
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": "29e8101f-14ba-4148-8ea8-121f6cc57824",
+              "name": "Roberto Godoy Atualizado",
+              "email": "godoyrw2_atualizado@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: Authorization
+            value: Bearer {% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3',
+              'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'never', 60 %}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users/29e8101f-14ba-4148-8ea8-121f6cc57824"
+        name: Excluir Usuário
+        meta:
+          id: req_bfb88a689b1d4ca494902ad010dfd822
+          created: 1781818800005
+          modified: 1782431688582
+          isPrivate: false
+          description: ""
+          sortKey: 0
+        method: DELETE
+        headers:
+          - name: Authorization
+            value: Bearer {% response 'body', 'req_deaf34fac629417fb8d79bad3cb7b0b3',
+              'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'never', 60 %}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_433befba6d65e5f145f587e2b09e904af4ed4c72
+    created: 1781809063051
+    modified: 1781809063051
+environments:
+  name: Base Environment
+  meta:
+    id: env_433befba6d65e5f145f587e2b09e904af4ed4c72
+    created: 1781809063050
+    modified: 1782432593742
+    isPrivate: false
+  data:
+    base_url: http://localhost:30001/api/v1

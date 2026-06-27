@@ -24,7 +24,18 @@
       "Bash(cat -n /mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml)",
       "Read(//mnt/**)",
       "Bash(sed -i 's/\\\\\\\\j/\\\\\\\\\\\\\\\\j/g' \"/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml\")",
-      "Bash(sed -i 's/\\\\\\\\&/\\\\\\\\\\\\\\\\&/g' \"/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml\")"
+      "Bash(sed -i 's/\\\\\\\\&/\\\\\\\\\\\\\\\\&/g' \"/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/secrets.yaml\")",
+      "Bash(grep -r \"mongodb\\\\|MongoDB\\\\|MongoClient\\\\|MongoCollection\" /mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/src/ --include=\"*.cs\" || true)",
+      "Bash(kubectl --context=kind-crudio-local get nodes)",
+      "Bash(kind export *)",
+      "Bash(KUBECONFIG=$\\(kind get kubeconfig-path --name=\"crudio-local\"\\) kubectl get nodes)",
+      "Bash(docker exec *)",
+      "Bash(ls -la /tmp/crudio-local/mongodb-data/)",
+      "Read(//tmp/crudio-local/**)",
+      "Bash(cp '/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/mongodb-statefulset.yaml' '/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s/mongodb-statefulset.yaml.bak')"
+    ],
+    "additionalDirectories": [
+      "/mnt/02 - OWD/.owd/.oct/.pus/.wd/.files/03 - Projetos/02 - Clients/01 - NFE.io/01 CrudIo/k8s"
     ]
   }
 }
