@@ -25,7 +25,7 @@ Console.WriteLine("🚀 Starting CrudIo API...");
 var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
 var port = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
 var db = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "appdb";
-var user = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "appuser";
+var user = Environment.GetEnvironmentVariable("POSTGRES_USERNAME") ?? "appuser";
 var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "appuser";
 
 var postgresConnection =
@@ -61,10 +61,14 @@ catch (Exception ex)
 // ----------------------------
 try
 {
+    var mongoHost = Environment.GetEnvironmentVariable("MONGO_HOST") ?? "mongodb";
+    var mongoPort = Environment.GetEnvironmentVariable("MONGO_PORT") ?? "27017";
+    var mongoUser = Environment.GetEnvironmentVariable("MONGO_ROOT_USERNAME") ?? "appuser";
+    var mongoPassword = Environment.GetEnvironmentVariable("MONGO_ROOT_PASSWORD") ?? "appuser";
+
     var mongoConnectionString =
-        Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING")
-        ?? "mongodb://mongodb:27017";
-        
+        $"mongodb://{mongoUser}:{mongoPassword}@{mongoHost}:{mongoPort}";
+
     var mongoDatabaseName =
         Environment.GetEnvironmentVariable("MONGO_DATABASE")
         ?? "appdb_logs";
@@ -185,44 +189,58 @@ app.Use(async (context, next) =>
                     var logger = context.RequestServices.GetService<IApiLogger>();
                     if (logger != null)
                     {
-                        var logEntry = new ApiLogEntry
+                        try
                         {
-                            Timestamp = startTime,
-                            HttpMethod = context.Request.Method,
-                            Path = context.Request.Path.ToString(),
-                            QueryString = context.Request.QueryString.ToString(),
-                            RemoteIpAddress = context.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
-                            UserAgent = context.Request.Headers.UserAgent.ToString(),
-                            StatusCode = context.Response.StatusCode,
-                            RequestHeaders = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToArray()),
-                            ElapsedMilliseconds = elapsedMilliseconds
-                        };
-
-                        // Tentar extrair o user ID do JWT se presente
-                        if (context.User.Identity?.IsAuthenticated == true)
-                        {
-                            var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "user_id");
-                            if (userIdClaim != null)
+                            var requestHeaders = new Dictionary<string, string[]>();
+                            foreach (var header in context.Request.Headers)
                             {
-                                logEntry.UserId = userIdClaim.Value;
+                                requestHeaders[header.Key] = header.Value.ToArray();
                             }
 
-                            // Tentar extrair client_id se for um token de cliente
-                            var clientIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == "client_id");
-                            if (clientIdClaim != null)
+                            var logEntry = new ApiLogEntry
                             {
-                                logEntry.ClientId = clientIdClaim.Value;
+                                Timestamp = startTime,
+                                HttpMethod = context.Request.Method,
+                                Path = context.Request.Path.ToString(),
+                                QueryString = context.Request.QueryString.ToString(),
+                                RemoteIpAddress = context.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
+                                UserAgent = context.Request.Headers.UserAgent.ToString() ?? string.Empty,
+                                StatusCode = context.Response.StatusCode,
+                                RequestHeaders = requestHeaders,
+                                ElapsedMilliseconds = elapsedMilliseconds
+                            };
+
+                            // Tentar extrair o user ID do JWT se presente
+                            if (context.User?.Identity?.IsAuthenticated == true)
+                            {
+                                var userIdClaim = context.User?.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "user_id");
+                                if (userIdClaim != null)
+                                {
+                                    logEntry.UserId = userIdClaim.Value;
+                                }
+
+                                // Tentar extrair client_id se for um token de cliente
+                                var clientIdClaim = context.User?.Claims.FirstOrDefault(c => c.Type == "client_id");
+                                if (clientIdClaim != null)
+                                {
+                                    logEntry.ClientId = clientIdClaim.Value;
+                                }
                             }
+
+                            // Log de forma assíncrona sem bloquear
+                            _ = logger.LogRequestAsync(logEntry);
                         }
-
-                        // Log de forma assíncrona sem bloquear
-                        _ = logger.LogRequestAsync(logEntry);
+                        catch (Exception ex)
+                        {
+                            // Em caso de erro no logging, não quebrar nada - apenas log no console
+                            System.Console.WriteLine($"⚠️ Logging error: {ex.Message}");
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Em caso de erro no logging, não quebrar nada - apenas log no console
-                    System.Console.WriteLine($"⚠️ Logging error: {ex.Message}");
+                    // Tratar qualquer outra exceção inesperada no callback
+                    System.Console.WriteLine($"⚠️ Unexpected error in logging callback: {ex.Message}");
                 }
             });
         });
@@ -282,8 +300,7 @@ using (var scope = app.Services.CreateScope())
 // ----------------------------
 app.MapGet("/health", () => Results.Ok(
         new { status = "healthy" }
-    )
-);
+    ));
 
 var ApiV1 = app.MapGroup("/api/v1");
 ApiV1.MapAuthEndpoints();

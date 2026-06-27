@@ -10,7 +10,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
         var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
         var port = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
         var db = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "appdb";
-        var user = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "appuser";
+        var user = Environment.GetEnvironmentVariable("POSTGRES_USERNAME") ?? "appuser";
         var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "appuser";
 
         var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";

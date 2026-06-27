@@ -1,8 +1,8 @@
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
+using System.IO;
 
 namespace CrudIo.Api.Logging;
-
 /// <summary>
 /// Implementação do IApiLogger que salva logs no MongoDB
 /// </summary>
@@ -15,26 +15,26 @@ public class MongoLogger : IApiLogger
         var client = new MongoClient(options.Value.ConnectionString);
         var database = client.GetDatabase(options.Value.DatabaseName);
         _logsCollection = database.GetCollection<ApiLogEntry>("api_logs");
-        
+
         // Criar índices para melhor performance de consultas
         var indexOptions = new CreateIndexOptions { Background = true };
-        
+
         // Índice por timestamp (mais recente primeiro) - essencial para consultas de log
         var timestampIndex = Builders<ApiLogEntry>.IndexKeys
             .Descending(l => l.Timestamp);
         _logsCollection.Indexes.CreateOne(new CreateIndexModel<ApiLogEntry>(timestampIndex, indexOptions));
-        
+
         // Índice composto para consultas por path e método
         var pathMethodIndex = Builders<ApiLogEntry>.IndexKeys
             .Ascending(l => l.Path)
             .Ascending(l => l.HttpMethod);
         _logsCollection.Indexes.CreateOne(new CreateIndexModel<ApiLogEntry>(pathMethodIndex, indexOptions));
-        
+
         // Índice para consultas por usuário
         var userIdIndex = Builders<ApiLogEntry>.IndexKeys
             .Ascending(l => l.UserId);
         _logsCollection.Indexes.CreateOne(new CreateIndexModel<ApiLogEntry>(userIdIndex, new CreateIndexOptions { Background = true, Sparse = true }));
-        
+
         // Índice para consultas por client ID
         var clientIdIndex = Builders<ApiLogEntry>.IndexKeys
             .Ascending(l => l.ClientId);
@@ -56,7 +56,17 @@ public class MongoLogger : IApiLogger
         {
             // Em caso de falha ao gravar no MongoDB, apenas logamos no console
             // Não lançamos a exceção para não afetar a resposta HTTP
-            System.Console.WriteLine($"⚠️ Falha ao gravar log no MongoDB: {ex.Message}");
+            try
+            {
+                // Tentar escrever no console de forma mais segura
+                var message = $"⚠️ Falha ao gravar log no MongoDB: {ex.Message}";
+                System.Console.WriteLine(message);
+            }
+            catch
+            {
+                // Se até mesmo escrever no console falhar, ignorar completamente
+                // Evitar recursão infinita de falhas de logging
+            }
         }
     }
 }
