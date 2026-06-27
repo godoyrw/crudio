@@ -31,7 +31,7 @@ spec:
           privileged: true
       containers:
       - name: mongodb
-        image: mongo:8
+        image: mongo:7.0
         ports:
         - containerPort: 27017
           name: mongodb
@@ -54,8 +54,8 @@ spec:
             memory: "512Mi"
             cpu: "100m"
           limits:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "2Gi"
+            cpu: "1"
         readinessProbe:
           exec:
             command: ["sh", "-c", "mongosh -u \"$MONGO_INITDB_ROOT_USERNAME\" -p \"$MONGO_INITDB_ROOT_PASSWORD\" --authenticationDatabase admin --eval 'db.adminCommand(\"ping\")'"]
